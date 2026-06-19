@@ -1,0 +1,11 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# secrets
+.env
+
+# long-term memory & outputs (keep local; don't commit data)
+kb.db
+digests/*.md

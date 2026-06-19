@@ -1,0 +1,25 @@
+# 订阅源清单 —— 优先用 RSS（增量、稳定、礼貌）
+# 你可以随时增删。注释掉的是没有稳定公开 RSS 或需自行确认的源。
+feeds:
+  # ---- AI Agents ----
+  - https://simonwillison.net/atom/everything/
+  - https://blog.langchain.dev/rss/
+  - https://lilianweng.github.io/index.xml
+  - https://www.latent.space/feed
+
+  # ---- AI Infra / AI Engineering ----
+  - https://huyenchip.com/feed.xml
+  - https://eugeneyan.com/rss/
+  - https://magazine.sebastianraschka.com/feed
+  - https://huggingface.co/blog/feed.xml
+  - https://blog.vllm.ai/feed.xml
+
+  # ---- Lakehouse & 数据+AI 平台（Fabric / Databricks 及竞品）----
+  - https://www.databricks.com/blog/feed
+  - https://blog.fabric.microsoft.com/en-us/blog/feed/
+  - https://www.snowflake.com/blog/feed/
+  - https://www.getdbt.com/blog/rss.xml
+
+  # ---- 你自己要加的源（把准确的 RSS URL 填进来）----
+  # - https://example.com/feed     # "drop kick" 那个博客
+  # 注意：SemiAnalysis 等付费墙站点请用其官方 newsletter/RSS 订阅，勿抓取正文
