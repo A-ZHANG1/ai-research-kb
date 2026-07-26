@@ -9,3 +9,4 @@ venv/
 # long-term memory & outputs (keep local; don't commit data)
 kb.db
 digests/*.md
+knowledge_gap_report.md

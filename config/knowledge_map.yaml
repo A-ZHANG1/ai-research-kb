@@ -1,0 +1,35 @@
+# Knowledge map for the "Agent Runtime" pilot topic.
+#
+# Each concept has a `name` (display label) and `aliases` (case-insensitive
+# search terms used to detect mentions across the kb.db corpus). Edit this
+# file freely to add/remove concepts -- knowledge_gaps.py re-reads it every
+# run, no code changes needed.
+topic: Agent Runtime
+
+concepts:
+  - name: Tracing / Observability
+    aliases: ["tracing", "observability", "trace"]
+  - name: MLflow
+    aliases: ["mlflow"]
+  - name: Task Graph
+    aliases: ["task graph", "dag", "directed acyclic graph"]
+  - name: MCTS (Monte Carlo Tree Search)
+    aliases: ["mcts", "monte carlo tree search"]
+  - name: RL Environment / Agent Gym
+    aliases: ["rl environment", "reinforcement learning environment", "agent gym"]
+  - name: Harness Engineering
+    aliases: ["harness", "agent harness", "agent scaffold"]
+  - name: Temporal / Durable Execution
+    aliases: ["temporal", "durable execution"]
+  - name: Event Sourcing
+    aliases: ["event sourcing", "event-sourced"]
+  - name: Workflow Engine
+    aliases: ["workflow engine", "orchestration engine", "orchestrator"]
+  - name: Reward Modeling / Reward Shaping
+    aliases: ["reward model", "reward shaping", "reward hacking"]
+  - name: Agent Evaluation
+    aliases: ["agent eval", "agent evaluation", "arena", "eval suite", "benchmark"]
+  - name: Scaling Laws
+    aliases: ["scaling law", "scaling laws"]
+  - name: Context Engineering
+    aliases: ["context engineering", "context window management"]
