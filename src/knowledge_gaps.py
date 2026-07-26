@@ -1,13 +1,17 @@
-"""Knowledge-gap report: for a topic defined in config/knowledge_map.yaml,
-check how much each concept has actually shown up in the kb.db corpus so far,
-and flag genuine gaps vs. shallow vs. solid exposure.
+"""Knowledge-gap report: for a topic defined in an external knowledge-map
+YAML file, check how much each concept has actually shown up in the kb.db
+corpus so far, and flag genuine gaps vs. shallow vs. solid exposure.
+
+The knowledge map itself lives in the private interview-prep repo (not here)
+since it doubles as interview-prep study material:
+C:\\Users\\wanyuezhang\\interview-prep\\learning\\agent-runtime-knowledge-map.yaml
 
 This is deliberately a simple keyword-presence heuristic, not true semantic
 understanding -- "exposure" (the concept appeared in something you were sent)
 is a proxy for "you've had a chance to learn this", not proof you understood
 it. Treat the report as a prompt for what to read up on, not a grade.
 
-Usage: python src/knowledge_gaps.py [--out report.md]
+Usage: python src/knowledge_gaps.py [--map PATH] [--out report.md]
 """
 import argparse
 import datetime
@@ -19,6 +23,9 @@ import yaml
 from memory import Memory
 
 BASE = pathlib.Path(__file__).resolve().parent.parent
+DEFAULT_KNOWLEDGE_MAP = pathlib.Path(
+    r"C:\Users\wanyuezhang\interview-prep\learning\agent-runtime-knowledge-map.yaml"
+)
 
 # Thresholds for classifying exposure depth by number of distinct matching
 # articles found across all of a concept's aliases.
@@ -86,10 +93,12 @@ LABELS = {
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--map", default=str(DEFAULT_KNOWLEDGE_MAP),
+                         help="Path to the knowledge-map YAML (lives in interview-prep, not this repo)")
     parser.add_argument("--out", default=str(BASE / "knowledge_gap_report.md"))
     args = parser.parse_args()
 
-    topic, concepts = load_knowledge_map(BASE / "config" / "knowledge_map.yaml")
+    topic, concepts = load_knowledge_map(args.map)
     mem = Memory(BASE / "kb.db")
 
     rows = []
