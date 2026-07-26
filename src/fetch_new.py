@@ -14,6 +14,7 @@ Usage: python src/fetch_new.py [--out OUTPUT_PATH] [--limit-per-feed N]
 import argparse
 import json
 import pathlib
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeoutError
 
 import yaml
 
@@ -21,6 +22,25 @@ from fetch import extract_content, parse_feeds
 from memory import Memory
 
 BASE = pathlib.Path(__file__).resolve().parent.parent
+
+# fetch.py's extract_content() calls trafilatura.fetch_url() with no timeout
+# and no exception handling of its own -- a single slow/unresponsive server
+# can block the whole daily run indefinitely. Enforce a hard wall-clock cap
+# per URL here instead of touching fetch.py.
+CONTENT_FETCH_TIMEOUT_SECS = 25
+
+
+def extract_content_bounded(url, timeout=CONTENT_FETCH_TIMEOUT_SECS):
+    with ThreadPoolExecutor(max_workers=1) as pool:
+        future = pool.submit(extract_content, url)
+        try:
+            return future.result(timeout=timeout)
+        except FutureTimeoutError:
+            print(f"[fetch_new] timed out after {timeout}s extracting {url}, skipping content")
+            return None
+        except Exception as exc:  # noqa: BLE001
+            print(f"[fetch_new] error extracting {url}: {exc}")
+            return None
 
 
 def load_feeds(path):
@@ -54,7 +74,7 @@ def main():
         url = item["url"]
         if mem.is_seen(url):  # long-term memory => only new posts
             continue
-        item["content"] = extract_content(url)
+        item["content"] = extract_content_bounded(url)
         new_items.append(item)
 
     mem.close()
