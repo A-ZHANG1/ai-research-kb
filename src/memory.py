@@ -40,6 +40,13 @@ class Memory:
             CREATE INDEX IF NOT EXISTS idx_articles_fetched ON articles(fetched_at);
             """
         )
+        # Migration: category classifies entries learned ad hoc while answering
+        # questions (architecture/error-code/api/session-insight/general), as
+        # opposed to the RSS-sourced daily digest articles (category NULL).
+        try:
+            self.conn.execute("ALTER TABLE articles ADD COLUMN category TEXT")
+        except sqlite3.OperationalError:
+            pass  # column already exists
         self.conn.commit()
 
     def is_seen(self, url):
@@ -47,13 +54,13 @@ class Memory:
         return cur.fetchone() is not None
 
     def add_article(self, url, source=None, title=None, published=None,
-                    content=None, summary=None):
+                    content=None, summary=None, category=None):
         self.conn.execute(
             """INSERT OR IGNORE INTO articles
-               (url, source, title, published, fetched_at, content, summary)
-               VALUES (?, ?, ?, ?, ?, ?, ?)""",
+               (url, source, title, published, fetched_at, content, summary, category)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?)""",
             (url, source, title, published,
-             datetime.datetime.utcnow().isoformat(), content, summary),
+             datetime.datetime.utcnow().isoformat(), content, summary, category),
         )
         self.conn.commit()
 
