@@ -24,6 +24,7 @@ def rejection_reason(summary):
     for phrase in PLACEHOLDER_PHRASES:
         if phrase.lower() in text.lower():
             return f"placeholder phrase: {phrase}"
-    if "Why it matters：" not in text:
-        return "missing Why it matters"
+    lines = [line.strip() for line in text.splitlines()]
+    if not any(line.startswith("- Why it matters：") for line in lines):
+        return "missing standalone Why it matters bullet"
     return None
