@@ -18,6 +18,14 @@ def test_rejects_missing_why_it_matters():
     assert rejection_reason("- 一个没有结论的摘要") == "missing Why it matters"
 
 
+def test_rejects_irrelevant_omission_summary():
+    summary = (
+        "- 与 AI Agent、AI Infra 或 Lakehouse 无关，略过。\n"
+        "Why it matters：无相关技术实践价值。"
+    )
+    assert rejection_reason(summary) is not None
+
+
 def test_accepts_substantive_summary():
     summary = (
         "- dbt State 用缓存减少重复解析和仓库计算。\n"

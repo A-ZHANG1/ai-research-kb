@@ -8,6 +8,12 @@ PLACEHOLDER_PHRASES = (
     "抓取失败",
     "摘要暂缺",
     "no extractable content",
+    "与 ai agent、ai infra 或 lakehouse 无关",
+    "与ai/技术关系较弱",
+    "与 ai/技术关系较弱",
+    "本期从略",
+    "why it matters：无",
+    "无相关技术实践价值",
 )
 
 
