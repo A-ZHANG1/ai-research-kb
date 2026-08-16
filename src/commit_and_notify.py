@@ -12,6 +12,7 @@ import sys
 from digest import build_digest
 from memory import Memory
 from notify import deliver
+from summary_quality import rejection_reason
 
 BASE = pathlib.Path(__file__).resolve().parent.parent
 
@@ -22,18 +23,39 @@ def main():
         items = json.load(f)
 
     mem = Memory(BASE / "kb.db")
+    publishable = []
+    rejected = []
     for it in items:
+        reason = rejection_reason(it.get("summary"))
+        if reason:
+            rejected.append((it, reason))
+            mem.add_article(
+                it["url"], source=it.get("source"), title=it.get("title"),
+                published=it.get("published"), content=it.get("content"),
+                summary=None, category="skipped",
+            )
+            continue
+
         mem.add_article(
             it["url"], source=it.get("source"), title=it.get("title"),
             published=it.get("published"), content=it.get("content"),
             summary=it.get("summary"),
         )
-    mem.log_run(len(items))
+        publishable.append(it)
 
-    digest_md = build_digest(items)
+    if not publishable:
+        mem.close()
+        raise SystemExit("No publishable summaries; digest was not generated.")
+
+    mem.log_run(len(publishable))
+
+    digest_md = build_digest(publishable)
     out = deliver(digest_md, out_dir=str(BASE / "digests"))
 
-    print(f"[ai-research-kb] {len(items)} new article(s). Digest: {out}")
+    for it, reason in rejected:
+        print(f"[quality] omitted {it.get('title')!r}: {reason}")
+    print(f"[ai-research-kb] {len(publishable)} published, "
+          f"{len(rejected)} omitted. Digest: {out}")
     print(f"[ai-research-kb] memory: {mem.stats()}")
     mem.close()
 
